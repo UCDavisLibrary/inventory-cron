@@ -1,0 +1,30 @@
+{
+    "name": "inventory-cron",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "start": "node index.js"
+    },
+    "bin": {
+        "inventory": "bin/inventory.js"
+    },
+    "type": "module",
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "@keycloak/keycloak-admin-client": "^23.0.4",
+        "@ucd-lib/cork-app-utils": "^6.3.1",
+        "commander": "^13.1.0",
+        "cookie-parser": "^1.4.6",
+        "dotenv": "^16.4.7",
+        "express": "^4.18.2",
+        "jwt-decode": "^3.1.2",
+        "node-cron": "^3.0.3",
+        "node-fetch": "^3.3.1"
+    },
+    "devDependencies": {
+        "eslint-plugin-jsdoc": "^46.4.3"
+    }
+}

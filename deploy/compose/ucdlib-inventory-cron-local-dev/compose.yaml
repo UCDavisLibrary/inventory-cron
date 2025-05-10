@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  cli:
+    build:
+      context: ../../../            # Project root
+      dockerfile: deploy/compose/Dockerfile
+    env_file:
+      - .env
+    container_name: inventory-cli
+    volumes:
+      - ../../../src/cli:/app/cli
+      - ../../../src/lib:/app/lib
+      - ../../../src/serverConfig.js:/app/serverConfig.js
+    working_dir: /app/cli/bin
+    stdin_open: true
+    tty: true
+    
+  cron:
+    build:
+      context: ../../../            # Project root
+      dockerfile: deploy/compose/Dockerfile
+    env_file:
+      - .env
+    container_name: inventory-cron
+    volumes:
+      - ../../../src/cli:/app/cli
+      - ../../../src/lib:/app/lib
+      - ../../../src/cron:/app/cron
+      - ../../../src/serverConfig.js:/app/serverConfig.js
+      - ../../../src/index.js:/app/index.js
+    working_dir: /app/cli/bin
+    stdin_open: true
+    tty: true
+    working_dir: /app
+    command: node index.js
