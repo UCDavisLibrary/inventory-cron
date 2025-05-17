@@ -10,6 +10,9 @@ lerna-debug.log*
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
+# Service Account
+**/gc-writer-inventory-key.json
+
 # Runtime data
 pids
 *.pid

@@ -17,7 +17,7 @@ class InventoryCron {
     this.configuredError = 'Library IAM API not configured in env file. Cannot query employee data.';
   }
 
-  startCron(){
+  async startCron(){
     console.log("Cron is running");
 
     if(serverConfig.cron.enableCron) {

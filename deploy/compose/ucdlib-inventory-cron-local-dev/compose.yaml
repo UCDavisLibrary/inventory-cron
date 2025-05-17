@@ -12,6 +12,7 @@ services:
       - ../../../src/cli:/app/cli
       - ../../../src/lib:/app/lib
       - ../../../src/serverConfig.js:/app/serverConfig.js
+      - ../../../gc-writer-inventory-key.json:/etc/service-account.json
     working_dir: /app/cli/bin
     stdin_open: true
     tty: true
@@ -29,6 +30,7 @@ services:
       - ../../../src/cron:/app/cron
       - ../../../src/serverConfig.js:/app/serverConfig.js
       - ../../../src/index.js:/app/index.js
+      - ../../../gc-writer-inventory-key.json:/etc/service-account.json
     working_dir: /app/cli/bin
     stdin_open: true
     tty: true

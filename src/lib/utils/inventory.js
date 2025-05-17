@@ -113,7 +113,7 @@ class Inventory {
   }
 
   async equipmentUpdate(){
-    
+
     let peaksList = await equipmentFunctions.getPeaksList();
     let assetsList = await equipmentFunctions.getAssets();
 

@@ -1,5 +1,6 @@
 import {UcdiamModel, PeaksModel} from '../../lib/index.js'
 import config from '../../serverConfig.js';
+import loggerMessage from './logger.js';
 
 UcdiamModel.init(config.libraryIamApi);
 PeaksModel.init(config.peaks)
@@ -68,6 +69,12 @@ class employeeFunctions {
 
     async getDepartmentEmployees(){
         let peopleRes = await UcdiamModel.deptlist();
+
+        if(peopleRes.error){
+            await loggerMessage('ERROR', peopleRes.error);
+            throw new Error('Error getting IAM Employee List.');
+        }
+
         return peopleRes.payload.responseData;
     }
 
@@ -79,9 +86,21 @@ class employeeFunctions {
             let newList = {};
             newList.pps = dList;
             let employee = await UcdiamModel.employeeID(parseInt(dList.iamId));
+
+            if(employee.error){
+                await loggerMessage('ERROR', employee.error);
+                throw new Error('Error getting Employee ID from IAM.');
+            }
+
             employee = employee.payload.responseData.results[0];
 
             let supervisor = await UcdiamModel.employeeID(parseInt(dList.reportsToIAMID));
+
+            if(supervisor.error){
+                await loggerMessage('ERROR', supervisor.error);
+                throw new Error('Error getting Supervisor ID from IAM.');
+            }
+
             supervisor = supervisor.payload.responseData.results[0];
             newList.supervisor = supervisor;
 
@@ -107,6 +126,12 @@ class employeeFunctions {
 
     async getPeaksList() {
         let peaksEmployee = await PeaksModel.listEmployee();
+
+        if(peaksEmployee.error){
+            await loggerMessage('ERROR', peaksEmployee.error);
+            throw new Error('Error getting Peaks Employee List.');
+        }
+
         peaksEmployee = peaksEmployee.payload;
 
         return peaksEmployee;
@@ -154,84 +179,22 @@ class employeeFunctions {
             formatPeaksArray.push(peaks);
         })
 
-        // console.log(formatPeaksArray);
-
-        //uncomment after testing
-
-        // let test = [
-        //     {
-        //         "Active": true,
-        //         "TeamId": 70,
-        //         "UserId": "xxxx",
-        //         "User": {
-        //             "Iam": "5555555555",
-        //             "FirstName": "Test B First",
-        //             "LastName": "Test B Last",
-        //             "Email": "ss@ucdavis.edu"
-        //         },
-        //         "FirstName": "Test B First",
-        //         "LastName": "Test B Last",
-        //         "Name": "Test B Name 4",
-        //         "Email": "ss@ucdavis.edu",
-        //         "Tags": null,
-        //         "Title": "STDT 4",
-        //         "HomePhone": null,
-        //         "TeamPhone": null,
-        //         "SupervisorId": null,
-        //         "StartDate": "2025-03-18 00:00:00",
-        //         "EndDate": "2029-03-17 00:00:00",
-        //         "Category": null,
-        //         "Notes": null
-        //     },
-        //     {
-        //         "Active": true,
-        //         "TeamId": 70,
-        //         "UserId": "sbagg",
-        //         "User": {
-        //             "Iam": "6666666666",
-        //             "FirstName": "Test C First",
-        //             "LastName": "Test C Last",
-        //             "Email": "rr@ucdavis.edu"
-        //         },
-        //         "FirstName": "Test C First",
-        //         "LastName": "Test C Last",
-        //         "Name": "Test C Name 4",
-        //         "Email": "rr@ucdavis.edu",
-        //         "Tags": null,
-        //         "Title": "STDT 4",
-        //         "HomePhone": null,
-        //         "TeamPhone": null,
-        //         "SupervisorId": null,
-        //         "StartDate": "2025-03-18 00:00:00",
-        //         "EndDate": "2029-03-17 00:00:00",
-        //         "Category": null,
-        //         "Notes": null
-        //     }
-        // ];
-        // await this.postPeaksEmployees(test);
-
-
         await this.postPeaksEmployees(formatPeaksArray);
 
 
     }
 
     async postPeaksEmployees(newEmployeesArray){
-        // newEmployeesArray.map(async (emp) => {
-        //     let person = emp;
-        //     console.log("x:",person);
-        //     let r = await PeaksModel.createPeople(JSON.stringify(person));
-        //     console.log("R:", r);
-        //     // Report updated Employee to logger
-        // });
 
         for (const emp of newEmployeesArray) {
             console.log("Sending:", emp.Name);
             await PeaksModel.clearCache("employee");
             try {
                 let r = await PeaksModel.createPeople(JSON.stringify(emp));
+                await loggerMessage('INFO', r.state);
                 console.log("Response:", r.state);
             } catch (error) {
+                await loggerMessage('ERROR', error);
                 console.error("Error posting employee:", error);
             }
         }

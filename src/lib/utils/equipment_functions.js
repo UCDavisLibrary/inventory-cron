@@ -1,17 +1,21 @@
 import {LansweeperModel, PeaksModel} from '../../lib/index.js'
 import config from '../../serverConfig.js';
+import loggerMessage from './logger.js'
 
 LansweeperModel.init(config.lansweeper);
 PeaksModel.init(config.peaks)
 
 class equipmentFunctions {
-    constructor(){
-        this.equipmentFlattenList = [];
-    }
 
     async getAssets(){
-      this.equipmentList = await LansweeperModel.getAssets();
-      return this.equipmentList.payload;
+      let equipmentList = await LansweeperModel.getAssets();
+
+      if(equipmentList.error){
+        await loggerMessage('ERROR', equipmentList.error);
+        throw new Error('Error getting Lansweeper Equipment List.');
+      }
+
+      return equipmentList.payload;
 
     } 
 
@@ -72,6 +76,12 @@ class equipmentFunctions {
 
     async getPeaksList() {
         let peaksEquipment = await PeaksModel.listEquipment();
+
+        if(peaksEquipment.error){
+            await loggerMessage('ERROR', peaksEquipment.error);
+            throw new Error('Error getting Peaks Employees List.');
+        }
+
         peaksEquipment = peaksEquipment.payload;
 
         return peaksEquipment;
@@ -112,58 +122,21 @@ class equipmentFunctions {
 
                 formatPeaksArray.push(peaks);
             })
-
-            // console.log(formatPeaksArray);
     
             await this.postPeaksAssets(formatPeaksArray);
-
-            // uncomment for testing
-
-            // let test = [
-            //     {
-            //         "Type": "Default",
-            //         "TeamId": 70,
-            //         "Name": "Test B MacBook Pro",
-            //         "SerialNumber": "XXXXXXXXXXX",
-            //         "Make": "Apple",
-            //         "Model": "MacBook Pro Test B"
-            //     },
-            //     {
-            //         "Type": "Default",
-            //         "TeamId": 70,
-            //         "Name": "Test C MacBook Pro",
-            //         "SerialNumber": "XXXXXXXXXXX",
-            //         "Make": "Apple",
-            //         "Model": "MacBook Pro Test C"
-            //     },
-            //     {
-            //         "Type": "Default",
-            //         "TeamId": 70,
-            //         "Name": "Test D MacBook Pro",
-            //         "SerialNumber": "XXXXXXXXXXX",
-            //         "Make": "Apple",
-            //         "Model": "MacBook Pro Test D"
-            //     }
-            // ];
-
-            // await this.postPeaksAssets(test);
 
         }
 
         async postPeaksAssets(newAssetsArray){
-            // newAssetsArray.map(async (asset) => {
-            //     let r = await PeaksModel.createEquipment(JSON.stringify(asset));
-            //     console.log("R:", r);
-            //     // Report updated Equipment to logger
-            // });    
-
             for (const assets of newAssetsArray) {
                 console.log("Sending:", assets.Name);
                 await PeaksModel.clearCache("equipment");
                 try {
                     let r = await PeaksModel.createEquipment(JSON.stringify(assets));
+                    await loggerMessage('INFO', r.state);
                     console.log("Response:", r.state);
                 } catch (error) {
+                    await loggerMessage('ERROR', error);
                     console.error("Error posting employee:", error);
                 }
             }
