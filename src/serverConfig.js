@@ -63,33 +63,8 @@ class ServerConfig {
         cronSchedule: this.getEnv('UCDLIB_PERSONNEL_API_CRON_SCHEDULE', '0 7 * * *')
       }
   
-      this.logger = {
-        logLevel: this.getEnv('APP_LOGGER_LOG_LEVEL', 'info'),
-        logLevels: {},
-        disableCallerInfo: this.getEnv('APP_LOGGER_DISABLE_CALLER_INFO', false),
-        reportErrors: {
-          enabled: this.getEnv('APP_REPORT_ERRORS_ENABLED', false),
-          url: this.getEnv('APP_REPORT_ERRORS_URL', ''),
-          method: this.getEnv('APP_REPORT_ERRORS_METHOD', 'POST'),
-          key: this.getEnv('APP_REPORT_ERRORS_KEY', ''),
-          headers: {},
-          sourceMapExtension: this.getEnv('APP_REPORT_ERRORS_SOURCE_MAP_EXTENSION', '.map'),
-          customAttributes: {appOwner: 'itis', appName: 'inventory-cron'}
-        }
-      }
     }
   
-    // /**
-    //  * @description Print the current status of the server configuration to the console.
-    //  */
-    // printStatus() {
-    //   console.log('Error Reporting:', this.logger.reportErrors.enabled ? 'Enabled' : 'Disabled');
-    //   console.log('Email Notifications:', this.email.enabled ? 'Enabled' : 'Disabled');
-    //   console.log('Email Cron:', this.email.enableCron ? 'Enabled' : 'Disabled');
-    //   console.log('System Email Address:', this.email.systemEmailAddress);
-    //   console.log('Notification Recipient Override:', this.email.notificationRecipient);
-    //   console.log('Library IAM Cron:', this.libraryIamApi.enableCron ? 'Enabled' : 'Disabled');
-    // }
   
     /**
      * @description Get an environment variable.  If the variable is not set, return the default value.
