@@ -1,5 +1,4 @@
 import { Command } from 'commander';
-// import equipment from '../lib/equipment.js';
 import inventory from '../../lib/utils/inventory.js';
 
 const program = new Command();
