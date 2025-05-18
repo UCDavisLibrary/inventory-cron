@@ -50,7 +50,7 @@ To run commands type: `node inventory.js [command] [options]`
 
 
 
-**Usage**: *`inventory [command] [options]`*
+**Usage**: *`node inventory.js [command] [options]`*
 
   `people`: query and interact with employees in inventory
 
@@ -86,7 +86,7 @@ To run commands type: `node inventory.js [command] [options]`
 
 
 ### Inventory Equipment Menu
-**Usage**: `node inventory.js equipment [command] [options]`
+**Usage**: *`node inventory.js equipment [command] [options]`*
 
 
 
